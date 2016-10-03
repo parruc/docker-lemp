@@ -12,7 +12,7 @@ add_header X-Content-Type-Options "nosniff";
 server {
     listen 80;
     server_name www.{hostname}.it;
-    rewrite ^/(.*) http://{hostname}/$1 permanent;
+    rewrite ^/(.*) http://{hostname}/$$1 permanent;
 }
 
 server {
@@ -24,8 +24,8 @@ server {
     client_max_body_size 20M;
 
     location / {
-        proxy_set_header   X-Real-IP $remote_addr;
-        proxy_set_header   Host      $http_host;
+        proxy_set_header   X-Real-IP $$remote_addr;
+        proxy_set_header   Host      $$http_host;
         proxy_pass         localhost:7080;
     }
 }

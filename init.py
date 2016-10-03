@@ -8,11 +8,11 @@ def get_random_string(size=32, chars=string.letters + string.digits + ",;.:-_()=
     return ''.join(random.choice(chars) for _ in range(size))
 
 def replace_words_in_file(file, values):
-   input_file = file + ".template"
-    with open(input_file, "r") as input_file:
-        input_template = string.Template(input_file.read())
-    if not input_template:
-        return False
+    input_file_path = file + ".template"
+    input_text = ""
+    with open(input_file_path, "r") as input_file:
+        input_text = input_file.read()
+    input_template = string.Template(input_text)
     output_text = input_template.substitute(values)
     with open(file, "w") as output_file:
         output_file.write(output_text)
@@ -27,18 +27,15 @@ args = parser.parse_args()
 args_dict = vars(args)
  
 base_path = os.path.dirname(os.path.realpath(__file__))
-nginx_available = "/" + os.path.join("etc", "nginx", "available", args.hostname)
-nginx_enabled = "/" + os.path.join("etc", "nginx", "enabled", args.hostname)
+nginx_available = "/" + os.path.join("etc", "nginx", "available", args.hostname + ".conf")
+nginx_enabled = "/" + os.path.join("etc", "nginx", "enabled", args.hostname + ".conf")
 for file in ["docker-compose.yml", "nginx.external.conf", ]:
     file_path = os.path.join(base_path, file)
     replace_words_in_file(file_path, args_dict)
-    if file == "nginx.external.conf":
-        os.symlink(file_path, nginx_available)
-        os.symlink(nginx_available, nginx_enabled)
 
 ## show values ##
 print ("Generated configuration with:")
-print ("Host name: %s" % args.hostnamea)
+print ("Host name: %s" % args.hostname)
 print ("Database name: %s" % args.dbname)
 print ("Database user: %s" % args.dbuser)
 print ("Database password: %s" % args.dbpassword)
