@@ -11,21 +11,21 @@ add_header X-Content-Type-Options "nosniff";
 # (you could also do the opposite www -> non-www domain)
 server {
     listen 80;
-    server_name www.{hostname}.it;
-    rewrite ^/(.*) http://{hostname}/$$1 permanent;
+    server_name www.$hostname;
+    rewrite ^/(.*) http://$hostname/$$1 permanent;
 }
 
 server {
 
     listen 80;
-    server_name pippo;
-    access_log /var/log/nginx/{hostname}.access.log;
-    error_log /var/log/nginx/{hostname}.error.log;
+    server_name $hostname;
+    access_log /var/log/nginx/$hostname.access.log;
+    error_log /var/log/nginx/$hostname.error.log;
     client_max_body_size 20M;
 
     location / {
         proxy_set_header   X-Real-IP $$remote_addr;
         proxy_set_header   Host      $$http_host;
-        proxy_pass         localhost:7080;
+        proxy_pass         http://localhost:$httpport;
     }
 }

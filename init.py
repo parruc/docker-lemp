@@ -19,6 +19,8 @@ def replace_words_in_file(file, values):
 
 parser = argparse.ArgumentParser(description='Docker lemp stack configurator.')
 parser.add_argument('-hn', '--hostname', help='Host name', required=True)
+parser.add_argument('-p', '--httpport', help='Http internal port number', default="7080", required=False)
+parser.add_argument('-ps', '--httpsport', help='Https internal port number', default="7443", required=False)
 parser.add_argument('-dbn', '--dbname', help='Database name', required=False, default="database")
 parser.add_argument('-dbu', '--dbuser', help='Database user', required=False, default="user")
 parser.add_argument('-dbp', '--dbpassword', help='Database password', required=False, default=get_random_string())
@@ -36,6 +38,8 @@ for file in ["docker-compose.yml", "nginx.external.conf", ]:
 ## show values ##
 print ("Generated configuration with:")
 print ("Host name: %s" % args.hostname)
+print ("http port: %s" % args.httpport)
+print ("https port: %s" % args.httpsport)
 print ("Database name: %s" % args.dbname)
 print ("Database user: %s" % args.dbuser)
 print ("Database password: %s" % args.dbpassword)
