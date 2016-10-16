@@ -19,8 +19,9 @@ def replace_words_in_file(file, values):
 
 parser = argparse.ArgumentParser(description='Docker lemp stack configurator.')
 parser.add_argument('-hn', '--hostname', help='Host name', required=True)
-parser.add_argument('-p', '--httpport', help='Http internal port number', default="7080", required=False)
-parser.add_argument('-ps', '--httpsport', help='Https internal port number', default="7443", required=False)
+parser.add_argument('-pi', '--httpinternalport', help='Http internal nginx port number', default="8080", required=False)
+parser.add_argument('-pe', '--httpexternalport', help='Http external ninx port number', default="80", required=False)
+parser.add_argument('-c', '--certificatespath', help='Certificates path', default="", required=False)
 parser.add_argument('-dbn', '--dbname', help='Database name', required=False, default="database")
 parser.add_argument('-dbu', '--dbuser', help='Database user', required=False, default="user")
 parser.add_argument('-dbp', '--dbpassword', help='Database password', required=False, default=get_random_string())
@@ -33,6 +34,7 @@ base_path = os.path.dirname(os.path.realpath(__file__))
 nginx_available = "/" + os.path.join("etc", "nginx", "available", args.hostname + ".conf")
 nginx_enabled = "/" + os.path.join("etc", "nginx", "enabled", args.hostname + ".conf")
 args.rewrite = args.rewrite and "try_files $uri $uri/ /index.php?$args" or ""
+args.certificates = args.certificatespath and "try_files $uri $uri/ /index.php?$args" or ""
 for file in ["docker-compose.yml", "nginx.external.conf", "nginx.internal.conf"]:
     file_path = os.path.join(base_path, file)
     replace_words_in_file(file_path, args_dict)
@@ -43,10 +45,11 @@ for file in ["docker-compose.yml", "nginx.external.conf", "nginx.internal.conf"]
 ## show values ##
 print ("Generated configuration with:")
 print ("Host name: %s" % args.hostname)
-print ("http port: %s" % args.httpport)
-print ("https port: %s" % args.httpsport)
+print ("http ports: %s:%s" % (args.httpinternalport, args.httpexternalport, ))
 print ("Database name: %s" % args.dbname)
 print ("Database user: %s" % args.dbuser)
 print ("Database password: %s" % args.dbpassword)
 print ("Database root password: %s" % args.dbrootpassword)
 print ("Rewrite is %s" % (args.rewrite and "active" or "not acrive", ))
+if args.certificatespath:
+    print ("Certificate path is %s" % (args.certificatespath, ))

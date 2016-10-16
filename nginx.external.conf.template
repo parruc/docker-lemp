@@ -8,14 +8,14 @@ add_header X-Content-Type-Options "nosniff";
 # Redirect all www-less traffic to the www.site.com domain
 # (you could also do the opposite www -> non-www domain)
 server {
-    listen 80;
+    listen $httpexternalport;
     server_name www.$hostname;
     rewrite ^/(.*) http://$hostname/$$1 permanent;
 }
 
 server {
     add_header Content-Security-Policy "default-src 'self'; img-src 'self' data: *; style-src 'self' 'unsafe-inline' *.googleapis.com *.akamaihd.net; font-src 'self' data: *.googleapis.com *.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.googleapis.com *.bitmovin.com *.akamaihd.net; child-src 'self' *.youtube.com; connect-src 'self' *.bitmovin.com; media-src 'self' blob:";
-    listen 80;
+    listen $httpexternalport;
     server_name $hostname;
     access_log /var/log/nginx/$hostname.access.log;
     error_log /var/log/nginx/$hostname.error.log;
@@ -24,6 +24,6 @@ server {
     location / {
         proxy_set_header   X-Real-IP $$remote_addr;
         proxy_set_header   Host      $$http_host;
-        proxy_pass         http://localhost:$httpport;
+        proxy_pass         http://localhost:$httpinternalport;
     }
 }
