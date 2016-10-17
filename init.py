@@ -4,6 +4,9 @@ import argparse
 import string
 import random
 
+
+TODO: USARE JINJA2 per i template in modo da poter fare  if e cose molto più fighe. In questo modo il blocco https sarebbe condizionale e non dovrei inventarmi un cazzo di niente porco dio
+
 def get_random_string(size=32, chars=string.letters + string.digits + ",;.:-_()="):
     return ''.join(random.choice(chars) for _ in range(size))
 
