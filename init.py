@@ -25,15 +25,20 @@ parser.add_argument('-dbn', '--dbname', help='Database name', required=False, de
 parser.add_argument('-dbu', '--dbuser', help='Database user', required=False, default="user")
 parser.add_argument('-dbp', '--dbpassword', help='Database password', required=False, default=get_random_string())
 parser.add_argument('-dbrp', '--dbrootpassword', help='Database root password', required=False, default=get_random_string())
+parser.add_argument('-rw', '--rewrite', help="Use this parameter if your website uses url rewrite", default=False, action='store_true')
 args = parser.parse_args()
 args_dict = vars(args)
  
 base_path = os.path.dirname(os.path.realpath(__file__))
 nginx_available = "/" + os.path.join("etc", "nginx", "available", args.hostname + ".conf")
 nginx_enabled = "/" + os.path.join("etc", "nginx", "enabled", args.hostname + ".conf")
-for file in ["docker-compose.yml", "nginx.external.conf", ]:
+args.rewrite = args.rewrite and "try_files $uri $uri/ /index.php?$args" or ""
+for file in ["docker-compose.yml", "nginx.external.conf", "nginx.internal.conf"]:
     file_path = os.path.join(base_path, file)
     replace_words_in_file(file_path, args_dict)
+
+# TODO: ln -s $PWD/nginx.external.conf /etc/nginx/sites-available/ballardinivini.conf
+# TODO: ln -s /etc/nginx/sites-available/ballardinivini.conf /etc/nginx/sites-enabled/ballardinivini.conf
 
 ## show values ##
 print ("Generated configuration with:")
@@ -44,3 +49,4 @@ print ("Database name: %s" % args.dbname)
 print ("Database user: %s" % args.dbuser)
 print ("Database password: %s" % args.dbpassword)
 print ("Database root password: %s" % args.dbrootpassword)
+print ("Rewrite is %s" % (args.rewrite and "active" or "not acrive", ))
