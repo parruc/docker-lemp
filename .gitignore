@@ -2,6 +2,9 @@
 nginx.external.conf
 nginx.internal.conf
 docker-compose.yml
+certbot-auto
+certbot.log
+pip-selfcheck.json
 db/
 www/
 bin/
