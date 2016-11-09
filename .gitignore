@@ -3,3 +3,7 @@ nginx.internal.conf
 docker-compose.yml
 db/
 www/
+bin/
+include/
+lib/
+local/

@@ -8,22 +8,48 @@ add_header X-Content-Type-Options "nosniff";
 # Redirect all www-less traffic to the www.site.com domain
 # (you could also do the opposite www -> non-www domain)
 server {
-    listen $httpexternalport;
-    server_name www.$hostname;
-    rewrite ^/(.*) http://$hostname/$$1 permanent;
+    listen {{httpexternalport}};
+    server_name www.{{hostname}};
+    rewrite ^/(.*) http://{{hostname}}/$1 permanent;
+}
+
+
+{% if certificatespath %}
+
+server {
+    listen *:80;
+    server_name {{ hostname }} www.{{hostname}};
+    return 301 https://{{hostname}}$request_uri;
 }
 
 server {
+        listen {{httpexternalport}} ssl;
+
+        ssl_certificate /etc/letsencrypt/live/miele-scozzoli.com/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/miele-scozzoli.com/privkey.pem;
+
+#        ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_prefer_server_ciphers on;
+        ssl_session_cache shared:SSL:10m;
+#        ssl_dhparam /etc/ssl/private/dhparams_4096.pem;
+
+{% else %}
+
+server {
+    listen {{httpexternalport}};
+
+{% endif %}
+
     add_header Content-Security-Policy "default-src 'self'; img-src 'self' data: *; style-src 'self' 'unsafe-inline' *.googleapis.com *.akamaihd.net; font-src 'self' data: *.googleapis.com *.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.googleapis.com *.bitmovin.com *.akamaihd.net; child-src 'self' *.youtube.com; connect-src 'self' *.bitmovin.com; media-src 'self' blob:";
-    listen $httpexternalport;
-    server_name $hostname;
-    access_log /var/log/nginx/$hostname.access.log;
-    error_log /var/log/nginx/$hostname.error.log;
+    server_name {{hostname}};
+    access_log /var/log/nginx/{{hostname}}.access.log;
+    error_log /var/log/nginx/{{hostname}}.error.log;
     client_max_body_size 20M;
 
     location / {
-        proxy_set_header   X-Real-IP $$remote_addr;
-        proxy_set_header   Host      $$http_host;
-        proxy_pass         http://localhost:$httpinternalport;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   Host      $http_host;
+        proxy_pass         http://localhost:{{httpinternalport}};
     }
 }

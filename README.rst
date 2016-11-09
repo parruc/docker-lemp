@@ -4,8 +4,9 @@ Brief guide
 Requirements:
 -------------
 
-TODO: virtualenv creation
-TODO: jinja2 installation
+Install virtualenv:
+virtualenv .
+pip install jinja2
 
 Commands to compile docker and config file tempaltes:
 -----------------------------------------------------
