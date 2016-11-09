@@ -1,12 +1,16 @@
 #!bin/python
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import json
 import argparse
 import string
 import random
 from jinja2 import Template
+import errno
+logging.basicConfig()
+logger = logging.getLogger(__name__)
 
 
 default_csp = """default-src 'self'; img-src 'self' data: *; style-src 'self' 'unsafe-inline' *.googleapis.com; font-src 'self' data: *.googleapis.com *.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.googleapis.com; child-src 'self' *.youtube.com; connect-src 'self'; media-src 'self' blob:"""
@@ -26,6 +30,23 @@ def replace_words_in_file(file, values):
     with open(file, "w") as output_file:
         output_file.write(output_text)
 
+
+def create_link_if_not_exist(source, dest):
+    try:
+        os.symlink(source, dest)
+    except Exception as e:
+        if e.errno == errno.EEXIST:
+            logger.info("Cannot create link because file '%s' already exists", dest)
+        logger.warning("Could not create symlink: from %s to %s with error %s", source, dest, e)
+
+
+def create_nginx_links(file, hostname):
+    nginx_available = "/" + os.path.join("etc", "nginx", "sites-available", hostname + ".conf")
+    nginx_enabled = "/" + os.path.join("etc", "nginx", "sites-enabled", hostname + ".conf")
+    create_link_if_not_exist(file, nginx_available)
+    create_link_if_not_exist(nginx_available, nginx_enabled)
+
+
 try:
     with open(".config", "r") as in_file:
         defaults = json.load(in_file)
@@ -42,30 +63,30 @@ parser.add_argument('-dbu', '--dbuser', help='Database user', required=False, de
 parser.add_argument('-dbp', '--dbpassword', help='Database password', required=False, default=defaults.get("dbpassword", get_random_string()))
 parser.add_argument('-dbrp', '--dbrootpassword', help='Database root password', required=False, default=defaults.get("dbrootpassword", get_random_string()))
 parser.add_argument('-rw', '--rewrite', help="Use this parameter if your website uses url rewrite", default=defaults.get("rewrite", False), action='store_true')
+parser.add_argument('-v', '--verbose', help="Use this parameter if you want to see verbose output", default=defaults.get("verbose", False), action='store_true')
 args = parser.parse_args()
 args_dict = vars(args)
- 
+if args.verbose:
+    logger.setLevel(logging.DEBUG)
+
 base_path = os.path.dirname(os.path.realpath(__file__))
-nginx_available = "/" + os.path.join("etc", "nginx", "available", args.hostname + ".conf")
-nginx_enabled = "/" + os.path.join("etc", "nginx", "enabled", args.hostname + ".conf")
 for file in ["docker-compose.yml", "nginx.external.conf", "nginx.internal.conf"]:
     file_path = os.path.join(base_path, file)
     replace_words_in_file(file_path, args_dict)
-
-# TODO: ln -s $PWD/nginx.external.conf /etc/nginx/sites-available/ballardinivini.conf
-# TODO: ln -s /etc/nginx/sites-available/ballardinivini.conf /etc/nginx/sites-enabled/ballardinivini.conf
+    if file == "nginx.external.conf":
+        create_nginx_links(file_path, args.hostname)
 
 ## show values ##
-print ("Generated configuration with:")
-print ("Host name: %s" % args.hostname)
-print ("http port: %s" % args.port)
-print ("Database name: %s" % args.dbname)
-print ("Database user: %s" % args.dbuser)
-print ("Database password: %s" % args.dbpassword)
-print ("Database root password: %s" % args.dbrootpassword)
-print ("Rewrite is %s" % (args.rewrite and "active" or "not acrive", ))
+logger.info("Generated configuration with:")
+logger.info("Host name: %s", args.hostname)
+logger.info("http port: %s", args.port)
+logger.info("Database name: %s", args.dbname)
+logger.info("Database user: %s", args.dbuser)
+logger.info("Database password: %s", args.dbpassword)
+logger.info("Database root password: %s", args.dbrootpassword)
+logger.info("Rewrite is %s", (args.rewrite and "active" or "not acrive", ))
 if args.certificatespath:
-    print ("Certificate path is %s" % (args.certificatespath, ))
+    logger.info("Certificate path is %s", (args.certificatespath, ))
 
 ## save values ##
 with open(".config", "w") as out_file:
