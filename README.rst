@@ -1,11 +1,20 @@
 Brief guide
 ===========
 
+Requirements:
+-------------
+
+Install virtualenv:
+virtualenv .
+pip install jinja2
+
 Commands to compile docker and config file tempaltes:
 -----------------------------------------------------
 
-./init.py -hn example.com -dbn dbname -dbu dbuser -p 6080 -ps 6443
+./init.py -hn example.com -dbn dbname -dbu dbuser -p 6080 
 ./init.py --help for all the possible values
+The configuration params will be printed on screen and saved on a .config file for not given params
+init will get defaults from .config file if any otherwise will use his own defaults
 
 Command to link nginx:
 ----------------------
