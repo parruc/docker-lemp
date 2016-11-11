@@ -5,6 +5,7 @@ Requirements:
 -------------
 
 existing nginx on host machine
+docker and docker-compose installed
 Install virtualenv:
 virtualenv .
 pip install -r requirements.txt 

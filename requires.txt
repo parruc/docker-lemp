@@ -1,3 +1,2 @@
 setuptools>11.3
-jinja2
 certbot
