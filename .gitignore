@@ -1,4 +1,5 @@
 .config
+letsencrypt*
 nginx.external.conf
 nginx.internal.conf
 docker-compose.yml
