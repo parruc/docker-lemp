@@ -90,23 +90,41 @@ www directory will have all files created by the user running all the process
 above. If your architecture requires write permission (i.e. wordpress plugin
 installation via web interface) you will have to change the owner:
 
-```
+```bash
 
-sudo docker run --rm php:custom-fpm id www-data
+    sudo docker run --rm php:custom-fpm id www-data
 
 ```
 
 will return you a uid and gid (i.e. 33)
 
 
-```
+```bash
 
-chown 33:33 www/ -R
+    chown 33:33 www/ -R
 
 ```
 
 HTTPS
 -----
+
+If you want to setup an https server you will also need letsencrypt
+
+``` bash
+
+    sudo apt-get install letsencrypt 
+
+```
+
+And you will have to create your own certificates
+
+```bash
+
+    letsencrypt certonly --webroot -w . -d example.com -d www.example.com
+
+
+```
+
 
 To use https you can use certificatespath arguemnt writing the path where the
 certificates are. The certificates must have been created externally
