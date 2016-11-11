@@ -45,7 +45,8 @@ The init script help:
 
 Docker lemp stack configurator:
 
-```
+
+```bash
 
 optional arguments:
   -h, --help            show this help message and exit
