@@ -3,12 +3,27 @@ Brief guide
 
 Requirements:
 -------------
+ * nginx
+ * docker
+ * docker-compose
+ * virtualenv
 
-existing nginx on host machine
-docker and docker-compose installed
-Install virtualenv:
-virtualenv .
-pip install -r requirements.txt 
+Installation example on deb based systems
+
+```bash
+
+    apt-get install nginx docker docker-compose virtualenv
+
+```
+
+Create a local virtualenv and install requirements
+
+```bash
+
+    virtualenv .
+    pip install -r requirements.txt 
+
+```
 
 Comamnds to build and run docker conainers:
 ------------------------------------------
@@ -16,14 +31,21 @@ Comamnds to build and run docker conainers:
 First we have to call the init script that compiles the configuration templates
 into real configuration files for docker compose and nginx (both int and ext)
 
-./init.py -hn example.com -p 7080 -rw -dbn db_name -dbu db_user
-docker-compose up -d
-service nginx reload
+
+```bash
+
+    ./init.py -hn example.com -p 7080 -rw -dbn db_name -dbu db_user
+    docker-compose up -d
+    service nginx reload
+
+```
 
 The init script help:
 --------------------------
 
-Docker lemp stack configurator.
+Docker lemp stack configurator:
+
+```
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -46,6 +68,8 @@ optional arguments:
   -rw, --rewrite        Use this parameter if your website uses url rewrite
   -v, --verbose         Use this parameter to see verbose output
 
+```
+
 The configuration params will be printed on screen and saved on a .config file
 params order of resultion is:
 
@@ -65,11 +89,20 @@ www directory will have all files created by the user running all the process
 above. If your architecture requires write permission (i.e. wordpress plugin
 installation via web interface) you will have to change the owner:
 
+```
+
 sudo docker run --rm php:custom-fpm id www-data
+
+```
 
 will return you a uid and gid (i.e. 33)
 
+
+```
+
 chown 33:33 www/ -R
+
+```
 
 HTTPS
 -----
