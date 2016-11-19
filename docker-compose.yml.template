@@ -11,7 +11,7 @@ services:
       MYSQL_USER: {{dbuser}}
       MYSQL_PASSWORD: {{dbpassword}}
 
-  php:
+  php{{phpversion}}:
     depends_on:
       - db
     build:
@@ -24,7 +24,7 @@ services:
 
   web:
     depends_on:
-      - php
+      - php{{phpversion}}
     image: nginx:latest
     ports:
       - "127.0.0.1:{{port}}:80"
