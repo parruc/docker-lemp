@@ -17,6 +17,7 @@ server {
     {% endif %}
 
     location ~ \.php$ {
+        client_max_body_size {{ phpuploadlimit}}m;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass php{{phpversion}}:9000;
         fastcgi_index index.php;

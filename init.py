@@ -92,8 +92,10 @@ parser.add_argument('-dbp', '--dbpassword', help='Database password',
 parser.add_argument('-dbrp', '--dbrootpassword', help='Database root password',
                     required=False, default=defaults.get("dbrootpassword",
                                                          get_random_string()))
-parser.add_argument('-php', '--phpversion', help='php version: 5 or 7',
+parser.add_argument('-pv', '--phpversion', help='php version: 5 or 7',
                     required=False, default=defaults.get("phpversion", '7'))
+parser.add_argument('-pul', '--phpuploadlimit', help='max MB uplodable',
+                    required=False, default=defaults.get("phpuploadlimit", '2'))
 parser.add_argument('-rw', '--rewrite',
                     help="Use this parameter if your website uses url rewrite",
                     default=defaults.get("rewrite", False),
@@ -111,7 +113,8 @@ base_path = os.path.dirname(os.path.realpath(__file__))
 for file in ["docker-compose.yml",
              "nginx.external.conf",
              "nginx.internal.conf",
-             "php.dockerfile"]:
+             "php.dockerfile",
+             "php.override.ini"]:
     file_path = os.path.join(base_path, file)
     replace_words_in_file(file_path, args_dict)
     if file == "nginx.external.conf":
@@ -126,6 +129,7 @@ logger.info("Database user: %s", args.dbuser)
 logger.info("Database password: %s", args.dbpassword)
 logger.info("Database root password: %s", args.dbrootpassword)
 logger.info("PHP version: %s", args.phpversion)
+logger.info("PHP max uploadable size limit: %s", args.phpuploadlimit)
 logger.info("Rewrite is %s", (args.rewrite and "active" or "not acrive", ))
 if args.certificatespath:
     logger.info("Certificate path is %s", (args.certificatespath, ))

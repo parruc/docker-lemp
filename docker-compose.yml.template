@@ -20,6 +20,7 @@ services:
     image: php:fpm
     volumes:
       - ./www:/www
+      - ./php.override.ini:/usr/local/etc/php/conf.d/override.ini
     restart: always
 
   web:
