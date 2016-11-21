@@ -5,6 +5,7 @@ nginx.internal.conf
 docker-compose.yml
 certbot-auto
 certbot.log
+php.override.ini
 pip-selfcheck.json
 db/
 www/
