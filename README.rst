@@ -16,7 +16,7 @@ Installation example on deb based systems::
 Create a local virtualenv and install requirements::
 
     virtualenv .
-    pip install -r requirements.txt 
+    pip install -r requirements.txt
 
 Comamnds to build and run docker conainers:
 ------------------------------------------
@@ -31,6 +31,11 @@ into real configuration files for docker compose and nginx (both int and ext)::
 
 The init script help:
 --------------------------
+
+usage: init.py [-h] [-hn HOSTNAME] [-p PORT] [-cp CERTIFICATESPATH]
+             [-csp CONTENTSECURITYPOLICY] [-dbn DBNAME] [-dbu DBUSER]
+             [-dbp DBPASSWORD] [-dbrp DBROOTPASSWORD] [-pv PHPVERSION]
+             [-pul PHPUPLOADLIMIT] [-rw] [-v]
 
 Docker lemp stack configurator::
 
@@ -85,7 +90,7 @@ HTTPS
 
 If you want to setup an https server you will also need letsencrypt::
 
-    sudo apt-get install letsencrypt 
+    sudo apt-get install letsencrypt
 
 And you will have to create your own certificates::
 
