@@ -30,7 +30,7 @@ def get_random_string(size=32, chars=password_chars):
 
 
 def replace_words_in_file(file, values):
-    input_file_path = file + ".template"
+    input_file_path = file + ".jinja2"
     input_text = ""
     with open(input_file_path, "r") as input_file:
         input_text = input_file.read()
