@@ -16,11 +16,11 @@ services:
       - db
     build:
       context: .
-      dockerfile: php.dockerfile
+      dockerfile: config/php.dockerfile
     image: php:fpm
     volumes:
       - ./www:/www
-      - ./php.override.ini:/usr/local/etc/php/conf.d/override.ini
+      - ./config/php.override.ini:/usr/local/etc/php/conf.d/override.ini
     restart: always
 
   web:

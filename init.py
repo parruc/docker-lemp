@@ -29,15 +29,18 @@ def get_random_string(size=32, chars=password_chars):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-def replace_words_in_file(file, values):
-    input_file_path = file + ".jinja2"
+def replace_words_in_file(base_path, file, values):
+    src_file = file + ".jinja2"
+    src_file_path = os.path.join(base_path, "config.jinja2", src_file)
+    dst_file_path = os.path.join(base_path, "config", file)
     input_text = ""
-    with open(input_file_path, "r") as input_file:
-        input_text = input_file.read()
+    with open(src_file_path, "r") as src_file:
+        input_text = src_file.read()
     input_template = Template(input_text)
     output_text = input_template.render(**values)
-    with open(file, "w") as output_file:
+    with open(dst_file_path, "w") as output_file:
         output_file.write(output_text)
+    return dst_file_path
 
 
 def create_link_if_not_exist(source, dest):
@@ -115,8 +118,7 @@ for file in ["docker-compose.yml",
              "nginx.internal.conf",
              "php.dockerfile",
              "php.override.ini"]:
-    file_path = os.path.join(base_path, file)
-    replace_words_in_file(file_path, args_dict)
+    file_path = replace_words_in_file(base_path, file, args_dict)
     if file == "nginx.external.conf":
         create_nginx_links(file_path, args.hostname)
 
