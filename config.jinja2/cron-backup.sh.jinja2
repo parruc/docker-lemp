@@ -7,6 +7,6 @@ cd /backups
 git remote add git@bitbucket.org:parruc/backups.git
 git add {{ projectname }}/
 git commit -m "backup {{ projectname }}" {{ projectname }}/
-#git push -u origin master
+git push -u origin master
 cd /
 rm -Rf /backups/{{ projectname }}
