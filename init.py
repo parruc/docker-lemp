@@ -1,6 +1,7 @@
 #!bin/python
 # -*- coding: utf-8 -*-
 
+from crontab import CronTab
 from jinja2 import Template
 
 import argparse
@@ -9,6 +10,7 @@ import json
 import logging
 import os
 import random
+import stat
 import string
 
 
@@ -85,6 +87,9 @@ parser.add_argument('-csp', '--contentsecuritypolicy',
                     'security policy http header',
                     default=defaults.get("contentsecuritypolicy", default_csp),
                     required=False)
+parser.add_argument('-pn', '--projectname', help='Name of the project',
+                    required=False, default=defaults.get("projectname",
+                                                         "project"))
 parser.add_argument('-dbn', '--dbname', help='Database name', required=False,
                     default=defaults.get("dbname", "database"))
 parser.add_argument('-dbu', '--dbuser', help='Database user', required=False,
@@ -113,28 +118,35 @@ if args.verbose:
     logger.setLevel(logging.DEBUG)
 
 base_path = os.path.dirname(os.path.realpath(__file__))
+root_cron = None
+try:
+    root_cron = CronTab(user='root')
+except IOError:
+    logger.warning("Not changing cronjob: not root")
 for file in ["docker-compose.yml",
              "nginx.external.conf",
              "nginx.internal.conf",
              "php.dockerfile",
-             "php.override.ini"]:
+             "php.override.ini",
+             "cron-backup.sh", ]:
     file_path = replace_words_in_file(base_path, file, args_dict)
     if file == "nginx.external.conf":
         create_nginx_links(file_path, args.hostname)
+    if file.endswith(".sh"):
+        st = os.stat(file_path)
+        os.chmod(file_path, st.st_mode | stat.S_IEXEC)
 
-# show values #
-logger.info("Generated configuration with:")
-logger.info("Host name: %s", args.hostname)
-logger.info("http port: %s", args.port)
-logger.info("Database name: %s", args.dbname)
-logger.info("Database user: %s", args.dbuser)
-logger.info("Database password: %s", args.dbpassword)
-logger.info("Database root password: %s", args.dbrootpassword)
-logger.info("PHP version: %s", args.phpversion)
-logger.info("PHP max uploadable size limit: %s", args.phpuploadlimit)
-logger.info("Rewrite is %s", (args.rewrite and "active" or "not acrive", ))
-if args.certificatespath:
-    logger.info("Certificate path is %s", (args.certificatespath, ))
+    if file.startswith("cron-"):
+        if root_cron:
+            old_jobs = root_cron.find_command(file_path)
+            for job in old_jobs:
+                root_cron.remove(job)
+
+        root_job = root_cron.new(command=file_path)
+        root_job.minute.on(30)
+        root_job.hour.on(2)
+        root_job.enable()
+        root_cron.write()
 
 # save values #
 with open(".config", "w") as out_file:
