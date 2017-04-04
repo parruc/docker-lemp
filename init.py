@@ -142,11 +142,11 @@ for file in ["docker-compose.yml",
             for job in old_jobs:
                 root_cron.remove(job)
 
-        root_job = root_cron.new(command=file_path)
-        root_job.minute.on(30)
-        root_job.hour.on(2)
-        root_job.enable()
-        root_cron.write()
+            root_job = root_cron.new(command=file_path)
+            root_job.minute.on(30)
+            root_job.hour.on(2)
+            root_job.enable()
+            root_cron.write()
 
 # save values #
 with open(".config", "w") as out_file:
