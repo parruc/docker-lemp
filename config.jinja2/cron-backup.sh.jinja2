@@ -1,12 +1,13 @@
-mkdir /backups/{{ projectname }} -p
-docker-compose run --rm --name {{ projectname }}_db_backup db bash -c 'mysqldump --databases $MYSQL_DATABASE > /var/lib/mysql/dump.sql'
-sudo mv db/dump.sql /backups/{{ projectname }}/
-cp www /backups/{{ projectname }}/ -R
-cp .config /backups/{{ projectname }}/
-cd /backups
-git remote add git@bitbucket.org:parruc/backups.git
-git add {{ projectname }}/
-git commit -m "backup {{ projectname }}" {{ projectname }}/
-git push -u origin master
+mkdir /tmp/backup_{{ projectname }} -p
+docker-compose run --rm --name {{ projectname }}_db_backup db bash -c 'mysqldump --databases $MYSQL_DATABASE --user $MYSQL_USER --password=$MYSQL_PASSWORD --port 3306 > /var/lib/mysql/dump.sql'
+cp db/dump.sql /tmp/backup_{{ projectname }}/
+cp www /tmp/backup_{{ projectname }}/ -R
+cp .config /tmp/backup_{{ projectname }}/
+cd /tmp/backup_{{ projectname }}
+git init
+git remote add origin git@bitbucket.org:parruc/tmp/backup_{{ projectname }}.git
+git add .
+git commit -am "backup {{ projectname }}"
+git push origin master --force
 cd /
-rm -Rf /backups/{{ projectname }}
+rm -Rf /tmp/backup_{{ projectname }}
