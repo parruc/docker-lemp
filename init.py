@@ -102,12 +102,18 @@ parser.add_argument('-dbrp', '--dbrootpassword', help='Database root password',
                                                          get_random_string()))
 parser.add_argument('-pv', '--phpversion', help='php version: 5 or 7',
                     required=False, default=defaults.get("phpversion", '7'))
-parser.add_argument('-br', '--backuprepository', help='backup git repo',
-                    required=False, default=defaults.get("backuprepository",
-                                                         None))
 parser.add_argument('-pul', '--phpuploadlimit', help='max MB uplodable',
                     required=False, default=defaults.get("phpuploadlimit",
                                                          '2'))
+parser.add_argument('-br', '--backuprepository', help='backup git repo',
+                    required=False, default=defaults.get("backuprepository",
+                                                         None))
+parser.add_argument('-cm', '--cronjobminute', help='backup croonjob minute',
+                    required=False, default=defaults.get("cronjobminute",
+                                                         "30"))
+parser.add_argument('-ch', '--cronjobhour', help='backup cronjob hour',
+                    required=False, default=defaults.get("cronjobhour",
+                                                         "03"))
 parser.add_argument('-rw', '--rewrite',
                     help="Use this parameter if your website uses url rewrite",
                     default=defaults.get("rewrite", False),
@@ -147,8 +153,8 @@ for file in ["docker-compose.yml",
                 root_cron.remove(job)
 
             root_job = root_cron.new(command=file_path)
-            root_job.minute.on(30)
-            root_job.hour.on(2)
+            root_job.minute.on(args_dict["cronjob_minute"])
+            root_job.hour.on(args_dict["cronjob_hour"])
             root_job.enable()
             root_cron.write()
 
