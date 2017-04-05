@@ -153,8 +153,8 @@ for file in ["docker-compose.yml",
                 root_cron.remove(job)
 
             root_job = root_cron.new(command=file_path)
-            root_job.minute.on(args_dict["cronjob_minute"])
-            root_job.hour.on(args_dict["cronjob_hour"])
+            root_job.minute.on(args_dict["cronjobminute"])
+            root_job.hour.on(args_dict["cronjobhour"])
             root_job.enable()
             root_cron.write()
 
