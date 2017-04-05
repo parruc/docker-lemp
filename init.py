@@ -102,8 +102,12 @@ parser.add_argument('-dbrp', '--dbrootpassword', help='Database root password',
                                                          get_random_string()))
 parser.add_argument('-pv', '--phpversion', help='php version: 5 or 7',
                     required=False, default=defaults.get("phpversion", '7'))
+parser.add_argument('-br', '--backuprepository', help='backup git repo',
+                    required=False, default=defaults.get("backuprepository",
+                                                         None))
 parser.add_argument('-pul', '--phpuploadlimit', help='max MB uplodable',
-                    required=False, default=defaults.get("phpuploadlimit", '2'))
+                    required=False, default=defaults.get("phpuploadlimit",
+                                                         '2'))
 parser.add_argument('-rw', '--rewrite',
                     help="Use this parameter if your website uses url rewrite",
                     default=defaults.get("rewrite", False),
