@@ -1,5 +1,5 @@
 mkdir /tmp/backup_{{ projectname }} -p
-docker-compose run --rm --name {{ projectname }}_db_backup db bash -c 'mysqldump --databases $MYSQL_DATABASE --user $MYSQL_USER --password=$MYSQL_PASSWORD --port 3306 > /var/lib/mysql/dump.sql'
+docker-compose run --rm --name {{ projectname }}_db_backup db bash -c 'mysqldump --host db --databases $MYSQL_DATABASE --user $MYSQL_USER --password=$MYSQL_PASSWORD --port 3306 > /var/lib/mysql/dump.sql'
 cp db/dump.sql /tmp/backup_{{ projectname }}/
 cp www /tmp/backup_{{ projectname }}/ -R
 cp .config /tmp/backup_{{ projectname }}/
