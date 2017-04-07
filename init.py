@@ -146,7 +146,7 @@ for file in ["docker-compose.yml",
         st = os.stat(file_path)
         os.chmod(file_path, st.st_mode | stat.S_IEXEC)
 
-    if file.startswith("cron-"):
+    if file.startswith("cron-") and args_dict.get("backuprepository", False):
         if root_cron:
             old_jobs = root_cron.find_command(file_path)
             for job in old_jobs:
