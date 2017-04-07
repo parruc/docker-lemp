@@ -8,6 +8,7 @@ git init
 git remote add origin {{ backuprepository }}
 git add .
 git commit -am "backup {{ projectname }}"
-git push origin master --force
+git pull --no-edit -s ours origin master 
+git push origin master
 cd /
 rm -Rf /tmp/backup_{{ projectname }}
