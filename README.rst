@@ -16,7 +16,7 @@ Installation example on deb based systems::
 Create a local virtualenv and install requirements::
 
     virtualenv . --python=python3
-    pip install -r requirements.txt
+    bin/pip install -r requirements.txt
 
 Comamnds to build and run docker conainers:
 ------------------------------------------
