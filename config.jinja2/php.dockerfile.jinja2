@@ -1,7 +1,17 @@
 FROM php:{{phpversion}}-fpm
 RUN docker-php-ext-install mysqli
-RUN apt-get update && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng12-dev && rm -rf /var/lib/apt/lists/*
+RUN apt update
+RUN apt install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 RUN docker-php-ext-install gd
+{% if ldap %}
+RUN apt install -y libldap2-dev
+RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
+RUN docker-php-ext-install ldap
+{% endif %}
+{% if phpversion|float < 7.0 %}
+RUN apt install -y llibmcrypt-dev
 RUN docker-php-ext-install mcrypt
-#RUN docker-php-ext-install iconv 
+RUN docker-php-ext-install iconv 
+{% endif %}
+RUN rm -rf /var/lib/apt/lists/*

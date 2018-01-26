@@ -114,6 +114,10 @@ parser.add_argument('-cm', '--cronjobminute', help='backup croonjob minute',
 parser.add_argument('-ch', '--cronjobhour', help='backup cronjob hour',
                     required=False, default=defaults.get("cronjobhour",
                                                          "03"))
+parser.add_argument('-ldap', '--ldap',
+                    help="Use this parameter if your website uses ldap",
+                    default=defaults.get("ldap", False),
+                    action='store_true')
 parser.add_argument('-rw', '--rewrite',
                     help="Use this parameter if your website uses url rewrite",
                     default=defaults.get("rewrite", False),
