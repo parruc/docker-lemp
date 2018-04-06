@@ -132,6 +132,7 @@ if args.verbose:
     logger.setLevel(logging.DEBUG)
 
 base_path = os.path.dirname(os.path.realpath(__file__))
+args_dict["projectpath"] = base_path
 root_cron = None
 try:
     root_cron = CronTab(user='root')
