@@ -4,13 +4,6 @@ add_header Strict-Transport-Security "max-age=15768000; includeSubDomains";
 add_header X-XSS-Protection "1; mode=block";
 add_header X-Content-Type-Options "nosniff";
 
-map $sent_http_content_type $expires {
-    default                    off;
-    text/css                   max;
-    application/javascript     max;
-    ~image/                    max;
-}
-
 # Redirect all www-less traffic to the www.site.com domain
 # (you could also do the opposite www -> non-www domain)
 
@@ -70,7 +63,6 @@ server {
         proxy_set_header   X-Real-IP $remote_addr;
         proxy_set_header   Host      $http_host;
         proxy_pass         http://localhost:{{ port }};
-        expires            $expires;
     }
     location ^~ /.well-known/acme-challenge/ {
         default_type "text/plain";
