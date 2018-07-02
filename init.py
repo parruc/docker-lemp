@@ -115,6 +115,8 @@ parser.add_argument('-cm', '--cronjobminute', help='backup croonjob minute',
 parser.add_argument('-ch', '--cronjobhour', help='backup cronjob hour',
                     required=False, default=defaults.get("cronjobhour",
                                                          "03"))
+parser.add_argument('-bi', '--backupignores', help='backup ignore paths list',
+                    required=False, default=defaults.get("backupignores", []))
 parser.add_argument('-ldap', '--ldap',
                     help="Use this parameter if your website uses ldap",
                     default=defaults.get("ldap", False),
@@ -154,7 +156,7 @@ for file in ["docker-compose.yml",
 
     if file.startswith("cron-") and args_dict.get("backuprepository", False):
         if root_cron:
-            command = file_path + " > /var/log/" + file + ".log  2>&1"
+            command = file_path + " >> /var/log/" + file + ".log  2>&1"
             old_jobs = root_cron.find_command(re.compile(r'^' + file_path))
             for job in old_jobs:
                 root_cron.remove(job)
