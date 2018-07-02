@@ -12,6 +12,7 @@ import os
 import random
 import stat
 import string
+import re
 
 
 logging.basicConfig()
@@ -153,11 +154,11 @@ for file in ["docker-compose.yml",
 
     if file.startswith("cron-") and args_dict.get("backuprepository", False):
         if root_cron:
-            old_jobs = root_cron.find_command(file_path)
+            command = file_path + " > /var/log/" + file + ".log  2>&1"
+            old_jobs = root_cron.find_command(re.compile(r'^' + file_path))
             for job in old_jobs:
                 root_cron.remove(job)
-
-            root_job = root_cron.new(command=file_path)
+            root_job = root_cron.new(command=command)
             root_job.minute.on(args_dict["cronjobminute"])
             root_job.hour.on(args_dict["cronjobhour"])
             root_job.enable()
