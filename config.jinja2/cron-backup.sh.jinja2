@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH=$PATH:/usr/local/bin
 cd {{ projectpath }}
 mkdir /tmp/backup_{{ projectname }} -p
 docker-compose run --rm --name {{ projectname }}_db_backup db bash -c 'mysqldump --host db --databases $MYSQL_DATABASE --user $MYSQL_USER --password=$MYSQL_PASSWORD --port 3306 > /var/lib/mysql/dump.sql'
