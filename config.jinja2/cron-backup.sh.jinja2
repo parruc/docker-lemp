@@ -15,8 +15,10 @@ cp www /tmp/backup_{{ projectname }}/ -R
 cp .config /tmp/backup_{{ projectname }}/
 cd /tmp/backup_{{ projectname }}
 {% for ignore in backupignores %}
-  git rm -r -f www/wp-content/cache/
+  git rm -rf --cached www/wp-content/cache/
+  rm -rf www/wp-content/cache/
   echo {{ ignore }} > .gitignore
+  git commit -am "ignored {{ignore}} path"
 {% endfor %}
 git add . --all
 git commit -am "backup {{ projectname }}"
