@@ -24,7 +24,7 @@ Comamnds to build and run docker conainers:
 First we have to call the init script that compiles the configuration templates
 into real configuration files for docker compose and nginx (both int and ext)::
 
-
+    mkdir config
     ./init.py -hn example.com -p 7080 -rw -dbn db_name -dbu db_user
     docker-compose up -d
     service nginx reload
