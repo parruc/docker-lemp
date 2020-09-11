@@ -65,12 +65,15 @@ def create_nginx_links(file, hostname):
     create_link_if_not_exist(file, nginx_available)
     create_link_if_not_exist(nginx_available, nginx_enabled)
 
-
 try:
     with open(".config", "r") as in_file:
         defaults = json.load(in_file)
+        error_loading = False
 except:
     defaults = {}
+    error_loading = True
+    logger.warning("Using empty default: could not load config file")
+
 
 parser = argparse.ArgumentParser(description='Docker lemp stack configurator.')
 parser.add_argument('-hn', '--hostname', help='Host name',
@@ -167,5 +170,6 @@ for file in ["docker-compose.yml",
             root_cron.write()
 
 # save values #
-with open(".config", "w") as out_file:
-    json.dump(args_dict, out_file, sort_keys=True, indent=4)
+if not error_loading or args_dict["create"]:
+    with open(".config", "w") as out_file:
+        json.dump(args_dict, out_file, sort_keys=True, indent=4)
